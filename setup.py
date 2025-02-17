@@ -1,39 +1,45 @@
 from pathlib import Path
+from setuptools import find_namespace_packages, setup
 
-from setuptools import find_namespace_packages
-from setuptools import setup
+# Define paths
+ROOT_DIR = Path(__file__).parent
+DOCS_PATH = ROOT_DIR / "docs" / "README.md"
+README_PATH = ROOT_DIR / "README.md"
+VERSION_PATH = ROOT_DIR / "src" / "shaluai" / "version.py"
 
-DOCS_PATH = Path(__file__).parents[0] / "docs/README.md"
-PATH = Path("README.md")
-if not PATH.exists():
-    with open(DOCS_PATH, encoding="utf-8") as f1:
-        with open(PATH, "w+", encoding="utf-8") as f2:
-            f2.write(f1.read())
+# Ensure README.md exists by copying from docs/
+if DOCS_PATH.exists() and not README_PATH.exists():
+    README_PATH.write_text(DOCS_PATH.read_text(encoding="utf-8"), encoding="utf-8")
 
-VERSION_PATH = Path(__file__).parents[0] / "src/revChatGPT/version.py"
-with open(VERSION_PATH, encoding="utf-8") as f:
-    version = f.read().split('"')[1]
+# Extract version from version.py, fallback to "1.0.0" if missing
+if VERSION_PATH.exists():
+    version = VERSION_PATH.read_text(encoding="utf-8").split('"')[1]
+else:
+    version = "1.0.0"
 
+# Read long description safely
+long_description = README_PATH.read_text(encoding="utf-8") if README_PATH.exists() else "ShaluAI – The Ultimate Autonomous AI Assistant"
+
+# Setup configuration
 setup(
-    name="revChatGPT",
+    name="shaluai",
     version=version,
-    description="ChatGPT is a reverse engineering of OpenAI's ChatGPT API",
-    long_description=open(PATH, encoding="utf-8").read(),
+    description="ShaluAI – The Ultimate Autonomous AI Assistant",
+    long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/acheong08/ChatGPT",
+    url="https://github.com/PrathamPrasad148/ShaluAI",
     project_urls={
-        "Bug Report": "https://github.com/acheong08/ChatGPT/issues/new?assignees=&labels=bug-report&template=bug_report.yml&title=%5BBug%5D%3A+",
-        "Feature request": "https://github.com/acheong08/ChatGPT/issues/new?assignees=&labels=enhancement&template=feature_request.yml&title=%5BFeature+Request%5D%3A+",
+        "Bug Report": "https://github.com/PrathamPrasad148/ShaluAI/issues/new?labels=bug-report",
+        "Feature Request": "https://github.com/PrathamPrasad148/ShaluAI/issues/new?labels=enhancement",
     },
-    author="Antonio Cheong",
-    author_email="acheong@student.dalat.org",
-    license="GNU General Public License v2.0",
-    packages=find_namespace_packages("src"),
+    author="Pratham Prasad",
+    author_email="prathamprasad@example.com",
+    license="GNU General Public License v3.0",
+    packages=find_namespace_packages(where="src"),
     package_dir={"": "src"},
-    py_modules=["revChatGPT"],
+    py_modules=["shaluai"],
     package_data={"": ["*.json"]},
     install_requires=[
-        "OpenAIAuth>=3.0.0",
         "requests[socks]",
         "httpx[socks]",
         "prompt-toolkit",
@@ -42,11 +48,10 @@ setup(
         "rich",
     ],
     classifiers=[
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Intended Audience :: Developers",
-        "Intended Audience :: End Users/Desktop",
-        "Natural Language :: English",
-        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Intended Audience :: AI Researchers",
+        "Topic :: Software Development :: Artificial Intelligence",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
